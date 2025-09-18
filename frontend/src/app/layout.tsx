@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
 import AuthStatus from '@/components/AuthStatus'
+import NotificationsDropdown from '@/components/NotificationsDropdown'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,6 +36,7 @@ export default function RootLayout({
                   <Link href="/onboarding" className="text-gray-500 hover:text-gray-900">Get Started</Link>
                   <Link href="/dashboard" className="text-gray-500 hover:text-gray-900">Dashboard</Link>
                   <Link href="/data-room" className="text-gray-500 hover:text-gray-900">Data Room</Link>
+                  <NotificationsDropdown />
                   <AuthStatus />
                 </nav>
               </div>
