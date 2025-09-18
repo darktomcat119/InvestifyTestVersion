@@ -14,6 +14,7 @@ async function apiRequest<T>(
   const url = `${API_BASE_URL}${endpoint}`
   
   const response = await fetch(url, {
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -241,6 +242,25 @@ export const messagesApi = {
       method: 'POST',
       body: JSON.stringify({ sender, text }),
     })
+  }
+}
+
+/**
+ * Auth API functions
+ * @description Handles login/logout and current user
+ */
+export const authApi = {
+  async login(email: string) {
+    return apiRequest('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    })
+  },
+  async me() {
+    return apiRequest('/api/auth/me')
+  },
+  async logout() {
+    return apiRequest('/api/auth/logout', { method: 'POST' })
   }
 }
 

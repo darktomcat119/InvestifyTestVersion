@@ -121,6 +121,13 @@ export const FileUploadSchema = z.object({
 
 export type FileUpload = z.infer<typeof FileUploadSchema>
 
+// Auth types
+export const LoginSchema = z.object({
+  email: z.string().email('Valid email is required'),
+})
+
+export type LoginRequest = z.infer<typeof LoginSchema>
+
 // Error types
 export class AppError extends Error {
   constructor(
