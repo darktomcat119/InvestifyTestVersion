@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { 
   Building2, 
   TrendingUp, 
@@ -16,13 +17,14 @@ import {
   Calendar,
   MessageCircle
 } from 'lucide-react'
-import { companyApi, scoreApi, notificationsApi } from '@/lib/api'
+import { companyApi, scoreApi, notificationsApi, authApi } from '@/lib/api'
 
 /**
  * Dashboard page component
  * @description Displays company information, investability score, and quick actions
  */
 export default function DashboardPage() {
+  const router = useRouter()
   const [company, setCompany] = useState<any>(null)
   const [score, setScore] = useState<any>(null)
   const [notifications, setNotifications] = useState<any[]>([])
@@ -32,6 +34,14 @@ export default function DashboardPage() {
    * Load dashboard data
    * @description Fetches company, score, and notification data
    */
+  useEffect(() => {
+    let cancelled = false
+    authApi.me().catch(() => {
+      if (!cancelled) router.push('/login')
+    })
+    return () => { cancelled = true }
+  }, [router])
+
   useEffect(() => {
     const loadDashboardData = async () => {
       try {

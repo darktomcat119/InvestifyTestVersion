@@ -3,10 +3,10 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Building2, CheckCircle, Shield, CreditCard } from 'lucide-react'
-import { companyApi, kycApi, financialsApi } from '@/lib/api'
+import { companyApi, kycApi, financialsApi, authApi } from '@/lib/api'
 
 /**
  * Onboarding wizard component
@@ -28,6 +28,15 @@ export default function OnboardingPage() {
   console.log('Current companyData state:', companyData)
   const [kycVerified, setKycVerified] = useState(false)
   const [financialsLinked, setFinancialsLinked] = useState(false)
+
+  // Auth guard: redirect to /login if not authenticated
+  useEffect(() => {
+    let cancelled = false
+    authApi.me().catch(() => {
+      if (!cancelled) router.push('/login')
+    })
+    return () => { cancelled = true }
+  }, [router])
 
   /**
    * Handle company data submission
