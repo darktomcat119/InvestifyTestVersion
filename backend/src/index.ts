@@ -6,6 +6,7 @@ import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
+import cookie from '@fastify/cookie'
 import { PrismaClient } from '@prisma/client'
 import { AppError } from '../shared/types'
 
@@ -17,6 +18,7 @@ import filesRoutes from './routes/files'
 import scoreRoutes from './routes/score'
 import notificationsRoutes from './routes/notifications'
 import messagesRoutes from './routes/messages'
+import authRoutes from './routes/auth'
 
 // Initialize Prisma client
 export const prisma = new PrismaClient()
@@ -51,6 +53,16 @@ async function buildServer() {
       contentSecurityPolicy: false
     })
 
+    // Register cookies (for session auth)
+    await fastify.register(cookie, {
+      secret: process.env.COOKIE_SECRET || 'dev-secret',
+      parseOptions: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        secure: process.env.NODE_ENV === 'production'
+      }
+    })
+
     // Register rate limiting
     await fastify.register(rateLimit, {
       max: 100,
@@ -65,6 +77,7 @@ async function buildServer() {
     })
 
     // Register routes
+    await fastify.register(authRoutes, { prefix: '/api/auth' })
     await fastify.register(companyRoutes, { prefix: '/api/company' })
     await fastify.register(kycRoutes, { prefix: '/api/kyc' })
     await fastify.register(financialsRoutes, { prefix: '/api/financials' })
