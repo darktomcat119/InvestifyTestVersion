@@ -1,0 +1,65 @@
+// @fileoverview Prisma schema for Investify platform database
+// @description Defines the database schema for users, companies, documents, notifications, and messages
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  createdAt    DateTime       @default(now())
+  companies    Company[]
+  notifications Notification[]
+}
+
+model Company {
+  id               Int          @id @default(autoincrement())
+  userId           Int
+  name             String
+  sector           String
+  targetRaise      Int
+  revenue          Int
+  kycVerified      Boolean      @default(false)
+  financialsLinked Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+  user             User         @relation(fields: [userId], references: [id])
+  documents        Document[]
+  messages         Message[]
+}
+
+model Document {
+  id        Int      @id @default(autoincrement())
+  companyId Int
+  name      String
+  mimeType  String
+  size      Int
+  path      String
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String
+  message   String
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  companyId Int
+  sender    String
+  text      String
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
