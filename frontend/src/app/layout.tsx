@@ -5,6 +5,10 @@ import './globals.css'
 import Link from 'next/link'
 import AuthStatus from '@/components/AuthStatus'
 import NotificationsDropdown from '@/components/NotificationsDropdown'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { ThemeProvider } from 'next-themes'
+import ThemeToggle from '@/components/ThemeToggle'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,7 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
           <header className="bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center py-6">
@@ -36,6 +41,7 @@ export default function RootLayout({
                   <Link href="/onboarding" className="text-gray-500 hover:text-gray-900">Get Started</Link>
                   <Link href="/dashboard" className="text-gray-500 hover:text-gray-900">Dashboard</Link>
                   <Link href="/data-room" className="text-gray-500 hover:text-gray-900">Data Room</Link>
+                  <ThemeToggle />
                   <NotificationsDropdown />
                   <AuthStatus />
                 </nav>
@@ -43,7 +49,9 @@ export default function RootLayout({
             </div>
           </header>
           {children}
+          <ToastContainer position="top-right" theme="colored" newestOnTop closeOnClick pauseOnHover={false} />
         </div>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authApi } from '@/lib/api'
+import { toast } from 'react-toastify'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -15,9 +16,10 @@ export default function LoginPage() {
     setIsLoading(true)
     try {
       await authApi.login(email)
+      toast.success('Logged in')
       router.push('/dashboard')
     } catch (e) {
-      alert('Login failed')
+      toast.error('Login failed')
     } finally {
       setIsLoading(false)
     }

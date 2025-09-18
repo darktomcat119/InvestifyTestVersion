@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Building2, CheckCircle, Shield, CreditCard } from 'lucide-react'
 import { companyApi, kycApi, financialsApi, authApi } from '@/lib/api'
+import { toast } from 'react-toastify'
 
 /**
  * Onboarding wizard component
@@ -49,7 +50,7 @@ export default function OnboardingPage() {
     
     // Check if form has been touched
     if (!formTouched) {
-      alert('Please fill in the form before submitting.')
+      toast.info('Please fill in the form before submitting.')
       return
     }
     
@@ -63,10 +64,11 @@ export default function OnboardingPage() {
     
     try {
       await companyApi.createOrUpdate(companyData)
+      toast.success('Company saved')
       setCurrentStep(2)
     } catch (error) {
       console.error('Failed to save company data:', error)
-      alert('Failed to save company data. Please try again.')
+      toast.error('Failed to save company data')
     } finally {
       setIsLoading(false)
     }
@@ -81,11 +83,12 @@ export default function OnboardingPage() {
     
     try {
       await kycApi.verify()
+      toast.success('KYC verified')
       setKycVerified(true)
       setCurrentStep(3)
     } catch (error) {
       console.error('KYC verification failed:', error)
-      alert('KYC verification failed. Please try again.')
+      toast.error('KYC verification failed')
     } finally {
       setIsLoading(false)
     }
@@ -100,11 +103,12 @@ export default function OnboardingPage() {
     
     try {
       await financialsApi.link('dummy_token_123')
+      toast.success('Financials linked')
       setFinancialsLinked(true)
       setCurrentStep(4)
     } catch (error) {
       console.error('Financials linking failed:', error)
-      alert('Financials linking failed. Please try again.')
+      toast.error('Financials linking failed')
     } finally {
       setIsLoading(false)
     }
